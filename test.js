@@ -1,3 +1,8 @@
+const grid = [".......", "...O...", "....O..", ".......", "OO.....", "OO....."];
+const n = 3;
+
+bomberMan(n, grid);
+
 function bomberMan(n, grid) {
   var memo = {}; // memorizador de posiciones
   var redo = true; // referencia de repeticion de procesos apartir del 4to segundo
