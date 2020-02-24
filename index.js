@@ -1,6 +1,6 @@
 function bomberMan(n, grid) {
-  var memo = {}; // memorizador de posiciones
   var redo = true; // referencia de repeticion de procesos apartir del 4to segundo
+  var memoArr = [];
 
   /**
    * Memoriza en la variable 'memo' las posiciones que serán afectadas por las bombas actualmente ubicadas
@@ -10,12 +10,17 @@ function bomberMan(n, grid) {
    * @param {int} row índice de la fila
    * @param {Array} rowArr arreglo completo de la fila
    */
-  function memoDamangePositions(colum, columArr, row, rowArr) {
-    memo[colum + "-" + row] = ".";
-    if (colum != columArr.length - 1) memo[colum + 1 + "-" + row] = ".";
-    if (colum != 0) memo[colum - 1 + "-" + row] = ".";
-    if (row != rowArr.length - 1) memo[colum + "-" + (row + 1)] = ".";
-    if (row != 0) memo[colum + "-" + (row - 1)] = ".";
+
+  function getPosState(colum, columArr, row, rowArr) {
+    const validations = [
+      rowArr[row] == "O",
+      rowArr[row - 1] && rowArr[row - 1] == "O",
+      rowArr[row + 1] && rowArr[row + 1] == "O",
+      columArr[colum - 1] && columArr[colum - 1][row] == "O",
+      columArr[colum + 1] && columArr[colum + 1][row] == "O"
+    ];
+
+    return validations.some(e => e) ? "." : "O";
   }
 
   /**
@@ -24,27 +29,22 @@ function bomberMan(n, grid) {
    * @param {Array} positionsArray Matriz de valores
    */
   function fillEmptyWithBombs(positionsArray) {
-    return positionsArray.map((rowArray, colum, columArr) =>
-      rowArray.map((state, row, rowArr) => {
-        if (state == "O") {
-          memoDamangePositions(colum, columArr, row, rowArr);
-        }
+    memoArr = [];
+    return positionsArray.map((rowArray, colum, columArr) => {
+      memoArr.push([]);
+      return rowArray.map((state, row, rowArr) => {
+        memoArr[colum].push(getPosState(colum, columArr, row, rowArr));
         return "O";
-      })
-    );
+      });
+    });
   }
 
   /**
    * Genera el efecto de detonar las bombas utilizando las posiciones memorizadas por la variable 'memo' y reinicializandola.
    *
-   * @param {Array} positionsArray Matriz de valores
    */
-  function detonateBombs(positionsArray) {
-    const result = positionsArray.map((c, columIndex) =>
-      c.map((r, rowIndex) => memo[columIndex + "-" + rowIndex] || "O")
-    );
-    memo = {};
-    return result;
+  function detonateBombs() {
+    return memoArr;
   }
 
   /**
