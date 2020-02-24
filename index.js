@@ -30,13 +30,31 @@ function bomberMan(n, grid) {
    */
   function fillEmptyWithBombs(positionsArray) {
     memoArr = [];
-    return positionsArray.map((rowArray, colum, columArr) => {
+    var columCreated = [];
+    var rowCreated = [];
+
+    for (let columIndex = 0; columIndex < positionsArray.length; columIndex++) {
+      let columArr = positionsArray;
+      let rowArray = positionsArray[columIndex];
+      memoArr.push([]);
+
+      for (let rowIndex = 0; rowIndex < rowArray.length; rowIndex++) {
+        memoArr[columIndex].push(
+          getPosState(columIndex, columArr, rowIndex, rowArray)
+        );
+        rowCreated.push("O");
+      }
+      columCreated.push(rowCreated);
+    }
+
+    return columCreated;
+    /*     return positionsArray.map((rowArray, colum, columArr) => {
       memoArr.push([]);
       return rowArray.map((state, row, rowArr) => {
         memoArr[colum].push(getPosState(colum, columArr, row, rowArr));
         return "O";
       });
-    });
+    }); */
   }
 
   /**
